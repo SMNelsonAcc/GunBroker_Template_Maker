@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            * {
+                padding: 0px;
+                margin: 0px;
+            }
+            
+            td {
+                padding-bottom: 20px;
+                width: 20%;
+            }
+
+            textarea {
+                width: 98.8%;
+                height: 100px;
+                margin: 10px;
+            }
+
+            input {
+                width: 95%;
+            }
+
+        </style>
+    </head>
+    <body>
+        <table id="main-table">
+            <tr>
+                <td>
+                    <p>Select category</p>
+                    <select name="category" id="category-select" onchange="selectCategory();">
+                        <option value="handGun">Hand Gun</option>
+                        <option value="longGun">Long Gun</option>
+                    </select>
+                </td>
+                <td>
+                    <p>Select Condition</p>
+                    <select name="condition" id="condition-select">
+                        <option value="used">Used</option>
+                        <option value="new">New</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Select Type</p>
+                    <select name="type" id="type-select">
+                        <option value="pistol">Pistol</option>
+                        <option value="revolver">Revolver</option>
+                    </select>
+                </td>
+                <td>
+                    <p>Is NFA?</p>
+                    <select name="nfa" id="nfa-select">
+                        <option value="false">False</option>
+                        <option value="true">True</option>
+                    </select> 
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Manufactuerer</p>
+                    <input type="text" id="manufactuerer" placeholder="Put Manufactuerer Here">
+                </td>
+                <td>
+                    <p>Model</p>
+                    <input type="text" id="model" placeholder="Put Model Here">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Caliber</p>
+                    <input type="text" id="caliber" placeholder="Put Caliber Here">
+                </td>
+                <td>
+                    <p>Safety</p>
+                    <input type="text" id="safety" placeholder="Put Safety Type Here">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Action</p>
+                    <input type="text" id="action" placeholder="Put Action Here (SA, DA, DA/SA, SF)">
+                </td>
+                <td>
+                    <p>Sights</p>
+                    <input type="text" id="sights" placeholder="Put Sight Type and Configuration Here (type, optic readyness)">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Firearm Weight</p>
+                    <input type="number" id="f-weight" placeholder="Put Firearm Weight Here (lbs)">
+                </td>
+                <td>
+                    <p>Unit Weight</p>
+                    <input type="number" id="u-weight" placeholder="Put Unit Weight Here (lbs)">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Barrel Length</p>
+                    <input type="number" id="b-length" placeholder="Put Barrel Length Here">
+                </td>
+                <td>
+                    <p>Overall Length</p>
+                    <input type="number" id="o-length" placeholder="Put Overall Length Here">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p id="slide-description">Slide/Revolver Grip</p>
+                    <input type="text" id="slide" placeholder="Put Slide or R-Grip Color/Composition Here">
+                </td>
+                <td>
+                    <p id="frame-description">Frame</p>
+                    <input type="text" id="frame" placeholder="Put Frame Color/Composition Here">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <p>Description</p>
+
+                    <textarea spellcheck="true" id="description" placeholder="The 4 main things to describe in detail are everything that the firearm comes with, any special features/unusual markings, normal wear/scratching, abnormal wear/scratching."></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value="Submit" onclick="submitForm();">
+                </td>
+            </tr>
+            
+        </table>
+        <div>
+            <div style="width: 100%; height: 10px; background-color: black;"></div>
+            <div id="shown-html"></div>
+            <div style="width: 100%; height: 10px; background-color: black;"></div>
+            <div><p style="text-align: center; font-weight: bold; font-size: 2em;">In order to highlight all text => Ctrl + a ; In order to copy text => Ctrl + c</p></div>
+
+            <textarea style="height: 300px;" id="copied-html"></textarea>
+        </div>
+        <script>
+            function toTitleCase(str) {
+                return str.replace(
+                    /\w\S*/g,
+                    text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+                ).trim();
+            }
+
+            const selectCategory = () => {
+                let category = document.getElementById("category-select").value;
+                let typeSelect = document.getElementById("type-select");
+                let slide = document.getElementById("slide");
+                let frame = document.getElementById("frame");
+                let slideDescription = document.getElementById("slide-description");
+                let frameDescription = document.getElementById("frame-description");
+
+                if (category === "longGun") {
+                    typeSelect.innerHTML = '<option value="rifle">Rifle</option><option value="Shotgun">Shotgun</option>'
+                    slideDescription.innerHTML = "Stock/Forestock";
+                    frameDescription.innerHTML = "Reciever/Barrel";
+                    frame.placeholder = "Put Reciever/Barrel Color/Composition Here";
+                    slide.placeholder = "Put Stock/Forestock Color/Composition Here";
+                } else if (category === "handGun") {
+                    typeSelect.innerHTML = '<option value="pistol">Pistol</option><option value="revolver">Revolver</option>'
+                    slideDescription.innerHTML = "Slide/Revolver Grip";
+                    frame.placeholder = "Put Slide or R-Grip Color/Composition Here";
+                    frameDescription.innerHTML = "Frame";
+                    slide.placeholder = "Put Frame Color/Composition Here";
+
+                }
+            }
+
+            const submitForm = () => {
+                let lst = [];
+
+                let condition = document.getElementById("condition-select");
+                condition = condition.options[condition.selectedIndex].text.toUpperCase();
+                lst.push(condition);
+
+                let type = document.getElementById("type-select");
+                type =  toTitleCase(type.options[type.selectedIndex].text);
+                lst.push(type);
+
+                let isnfa = document.getElementById("nfa-select");
+                isnfa =  isnfa.options[isnfa.selectedIndex].text.toLowerCase();
+                lst.push(isnfa);
+
+                let manufactuerer = toTitleCase(document.getElementById("manufactuerer").value);
+                lst.push(manufactuerer);
+
+                let model = document.getElementById("model").value.toUpperCase();
+                lst.push(model);
+
+                let caliber = toTitleCase(document.getElementById("caliber").value);
+                lst.push(caliber);
+
+                let action = toTitleCase(document.getElementById("action").value);
+                lst.push(action);
+
+                let safety = toTitleCase(document.getElementById("safety").value);
+                lst.push(safety);
+
+                let sights = toTitleCase(document.getElementById("sights").value);
+                lst.push(sights);
+
+                let fWeight = toTitleCase(document.getElementById("f-weight").value);
+                lst.push(fWeight);
+
+                let uWeight = toTitleCase(document.getElementById("u-weight").value);
+                lst.push(uWeight);
+
+                let bLength = toTitleCase(document.getElementById("b-length").value);
+                lst.push(bLength);
+
+                let oLength = toTitleCase(document.getElementById("o-length").value);
+                lst.push(oLength);
+
+                let slide = toTitleCase(document.getElementById("slide").value);
+                lst.push(slide);
+
+                let frame = toTitleCase(document.getElementById("frame").value);
+                lst.push(frame);
+
+                let description = document.getElementById("description").value;
+                lst.push(description);
+
+                for (let i of lst) {
+                    if (i == "") {
+                        //alert("missing info needed");
+                        //return null;
+                    }
+                }
+
+                const chooseFrameDescrip = (type) => {
+                    switch (type) {
+                        case "Pistol":
+                        case "Revolver": return "Frame";
+                        break;
+                        case "Shotgun":
+                        case "Rifle": return "Reciever/Barrel";
+                        break;
+                    }
+                }
+
+                const chooseSlideDescrip = (type) => {
+                    switch (type) {
+                        case "Pistol": return "Slide";
+                        break;
+                        case "Revolver": return "Grip";
+                        break;
+                        case "Shotgun":
+                        case "Rifle": return "Stock/Forstock";
+                        break;
+                    }
+                }
+
+                let text = `
+                <figure class="image">
+                    <img style="display: block; margin-left: auto; margin-right: auto;" src="https://imgorchidpos.s3.amazonaws.com/storefront/354/1702909384.png">
+                </figure>
+                    <!-- Weapon Title-->
+                    <p style="text-align:center; font-size:3vw; font-weight:bold; font-family: Open Sans;"><span>${isnfa === "true" ? "*NFA Weapon*" : ""} </span><span>${condition} - </span>
+                        ${manufactuerer} ${model} ${caliber} ${type}
+                    </p>
+
+                    <!--
+                    <div style="background-color:#e40c0c; padding: 5px 0px 5px 0px;  margin-bottom: 10px; text-align:center; font-weight:bold; color: #ffffff; font-family: Open Sans;">Description</div>
+                    -->
+
+                    <div style="background-color:#e40c0c;color:#ffffff;font-family:Open Sans;margin-bottom:10px;padding:5px 0px;text-align:center;">
+                        <strong>Specifications</strong>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div style="text-align: left; padding: 10px; font-family: Open Sans;">
+
+                        <!-- Wepon Description -->
+                        <p>
+                            This ${condition.toLowerCase()} ${manufactuerer} ${model} is a ${caliber} ${action} ${type}. ${description}
+                        </p>
+
+                        <br>
+                        
+                        <!-- Notice -->
+                        <p>If your gun store does not have a copy of our FFL, please go to <a style="color: #0000FF; font-family: Open Sans;" href="https://www.nelsontactical.com/" target="_blank">nelsontactical.com</a> for our contact information.  Nelson Tactical makes every effort to make sure that all Firearms listed have every detail described to the best of our ability. The firearm is always inspected before it is listed with detailed photos revealing the overall condition and potential imperfections. The bidder needs to be aware that the firearm will be sold as displayed. Please contact Nelson Tactical via the contact form regarding any questions BEFORE bidding. We do not offer layaway, accept lower offers, or trade-ins on Gunbroker items. We are happy to ship C&R eligible firearms to C&R license holders, however, the license holder must provide proof that the firearm is C&R eligible beforehand. Shipping charges on Gunbroker-purchased firearms will be assessed whether the firearm is shipped or picked up in store, and a 3% handling fee will be assessed on all credit card transactions.</p>
+                        <p style="text-align: center;">Thank you,</p>
+                        <p style="text-align: center;">- The Nelson Tactical Team :)</p>
+
+                    </div>
+
+                    <div style="background-color:#e40c0c;color:#ffffff;font-family:Open Sans;margin-bottom:10px;padding:5px 0px;text-align:center;">
+                        <strong>Specifications</strong>
+                    </div>
+                    <figure class="table" style="width:auto;">
+                    <table style="margin: 0px auto; border: 2px solid #e40c0c; border-collapse: collapse; width:auto; background-color: #ffffff;">
+                        <tbody>
+                            <!-- Condition -->
+                            <tr>
+                                <td style="border: 2px solid #e40c0c; text-align: left; font-weight:bold; padding: 7px; font-family: Open Sans;">
+                                    Condition
+                                </td>
+                                <td style="border: 2px solid #e40c0c; text-align: left; padding: 7px; font-family: Open Sans;">                
+                                    ${condition}
+                                </td>
+                            </tr>
+
+                            <!-- Type -->
+                            <tr>
+                                <td style="border: 2px solid #e40c0c; text-align: left; font-weight:bold; padding: 7px; font-family: Open Sans;">
+                                    Type
+                                </td>
+                                <td style="border: 2px solid #e40c0c; text-align: left; padding: 7px; font-family: Open Sans;">                
+                                    ${type}
+                                </td>
+                            </tr>
+
+                            <!-- Manufacturer -->
+                            <tr>
+                                <td style="border: 2px solid #e40c0c; text-align: left; font-weight:bold; padding: 7px; font-family: Open Sans;">
+                                    Manufacturer
+                                </td>
+                                <td style="border: 2px solid #e40c0c; text-align: left; padding: 7px; font-family: Open Sans;">                
+                                    ${manufactuerer}
+                                </td>
+                            </tr>
+
+                            <!-- Model -->
+                            <tr>
+                                <td style="border: 2px solid #e40c0c; text-align: left; font-weight:bold; padding: 7px; font-family: Open Sans;">
+                                    Model
+                                </td>
+                                <td style="border: 2px solid #e40c0c; text-align: left; padding: 7px; font-family: Open Sans;">                
+                                    ${model}
+                                </td>
+                            </tr>
+
+                            <!-- Caliber -->
+                            <tr>
+                                <td style="border: 2px solid #e40c0c; text-align: left; font-weight:bold; padding: 7px; font-family: Open Sans;">
+                                    Caliber
+                                </td>
+                                <td style="border: 2px solid #e40c0c; text-align: left; padding: 7px; font-family: Open Sans;">                
+                                    ${caliber}
+                                </td>
+                            </tr>
+
+                            <!-- Action -->
+                            <tr>
+                                <td style="border: 2px solid #e40c0c; text-align: left; font-weight:bold; padding: 7px; font-family: Open Sans;">
+                                    Action
+                                </td>
+                                <td style="border: 2px solid #e40c0c; text-align: left; padding: 7px; font-family: Open Sans;">                
+                                    ${action}
+                                </td>
+                            </tr>
+
+                            <!-- Safety -->
+                            <tr>
+                                <td style="border: 2px solid #e40c0c; text-align: left; font-weight:bold; padding: 7px; font-family: Open Sans;">
+                                    Safety
+                                </td>
+                                <td style="border: 2px solid #e40c0c; text-align: left; padding: 7px; font-family: Open Sans;">                
+                                    ${safety}
+                                </td>
+                            </tr>
+
+                            <!-- Sights -->
+                            <tr>
+                                <td style="border: 2px solid #e40c0c; text-align: left; font-weight:bold; padding: 7px; font-family: Open Sans;">
+                                    Sights
+                                </td>
+                                <td style="border: 2px solid #e40c0c; text-align: left; padding: 7px; font-family: Open Sans;">                
+                                    ${sights}
+                                </td>
+                            </tr>
+                            
+                            <!-- Firearm Weight -->
+                            <tr>
+                                <td style="border: 2px solid #e40c0c; text-align: left; font-weight:bold; padding: 7px; font-family: Open Sans;">
+                                    Firearm Weight
+                                </td>
+                                <td style="border: 2px solid #e40c0c; text-align: left; padding: 7px; font-family: Open Sans;">                
+                                    ${fWeight} lbs
+                                </td>
+                            </tr>
+
+                            <!-- Unit Weight -->
+                            <tr>
+                                <td style="border: 2px solid #e40c0c; text-align: left; font-weight:bold; padding: 7px; font-family: Open Sans;">
+                                    Unit Weight
+                                </td>
+                                <td style="border: 2px solid #e40c0c; text-align: left; padding: 7px; font-family: Open Sans;">                
+                                    ${uWeight} lbs
+                                </td>
+                            </tr>
+
+                            <!-- Barrel Length -->
+                            <tr>
+                                <td style="border: 2px solid #e40c0c; text-align: left; font-weight:bold; padding: 7px; font-family: Open Sans;">
+                                    Barrel Length
+                                </td>
+                                <td style="border: 2px solid #e40c0c; text-align: left; padding: 7px; font-family: Open Sans;">                
+                                    ${bLength}"
+                                </td>
+                            </tr>
+
+                            <!-- Overall Length -->
+                            <tr>
+                                <td style="border: 2px solid #e40c0c; text-align: left; font-weight:bold; padding: 7px; font-family: Open Sans;">
+                                    Overall Length
+                                </td>
+                                <td style="border: 2px solid #e40c0c; text-align: left; padding: 7px; font-family: Open Sans;">                
+                                    ${oLength}"
+                                </td>
+                            </tr>
+
+                            <!-- Slide -->
+                            <tr>
+                                <td style="border: 2px solid #e40c0c; text-align: left; font-weight:bold; padding: 7px; font-family: Open Sans;">
+                                    ${chooseSlideDescrip(type)}
+                                </td>
+                                <td style="border: 2px solid #e40c0c; text-align: left; padding: 7px; font-family: Open Sans;">                
+                                    ${slide}
+                                </td>
+                            </tr>
+
+                            <!-- Frame -->
+                            <tr>
+                                <td style="border: 2px solid #e40c0c; text-align: left; font-weight:bold; padding: 7px; font-family: Open Sans;">
+                                    ${chooseFrameDescrip(type)}
+                                </td>
+                                <td style="border: 2px solid #e40c0c; text-align: left; padding: 7px; font-family: Open Sans;">                
+                                    ${frame}
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    </figure>
+                `;
+                document.getElementById("copied-html").innerHTML = text;
+                document.getElementById("shown-html").innerHTML = text;
+            }
+        </script>
+    </body>
+</html>
